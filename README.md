@@ -1,29 +1,29 @@
 # IMDB Join Order Benchmark — PostgreSQL
 
-Banco de dados IMDB containerizado para execução do [Join Order Benchmark (JOB)](https://github.com/gregrahn/join-order-benchmark).
+Containerized IMDB database for running the [Join Order Benchmark (JOB)](https://github.com/gregrahn/join-order-benchmark).
 
-## Origem dos dados
+## Data sources
 
-### Queries e schema (`join-order-benchmark/`)
-Obtidos do repositório: https://github.com/gregrahn/join-order-benchmark
+### Queries and schema (`join-order-benchmark/`)
+Obtained from the repository: https://github.com/gregrahn/join-order-benchmark
 
-Contém as 113 queries do benchmark do paper *"How Good Are Query Optimizers, Really?"* (Leis et al., VLDB 2015), além dos scripts `schema.sql` e `fkindexes.sql`.
+Contains the 113 benchmark queries from the paper *"How Good Are Query Optimizers, Really?"* (Leis et al., VLDB 2015), as well as the `schema.sql` and `fkindexes.sql` scripts.
 
 ### CSVs (`data/`)
-Snapshot do IMDB de maio de 2013, disponibilizado pelo CWI:
+IMDB snapshot from May 2013, made available by CWI:
 http://event.cwi.nl/da/job/imdb.tgz
 
-São os mesmos dados usados no paper original (*"A Resource-Aware Deep Cost Model for Big Data Query Processing"* — Yan Li, Liwei Wang, Sheng Wang, Yuan Sun, Zhiyong Peng, IEEE 2022).
+These are the same data used in the original paper (*"A Resource-Aware Deep Cost Model for Big Data Query Processing"* — Yan Li, Liwei Wang, Sheng Wang, Yuan Sun, Zhiyong Peng, IEEE 2022).
 
-## Como rodar
+## How to run
 
-### Pré-requisitos
-- [Docker](https://www.docker.com/) instalado
-- ~10GB de espaço livre em disco (~4.8GB para os CSVs + ~5GB para a imagem Docker com o banco populado)
+### Prerequisites
+- [Docker](https://www.docker.com/) installed
+- ~10GB of free disk space (~4.8GB for the CSVs + ~5GB for the Docker image with the populated database)
 
-### 0. Baixar os dados
+### 0. Download the data
 
-Os CSVs não estão no repositório por serem muito grandes (~4.8GB). Baixe o arquivo antes de fazer o build:
+The CSVs are not included in the repository because they are too large (~4.8GB). Download the file before building:
 
 ```bash
 mkdir -p data
@@ -33,15 +33,15 @@ tar -xzf imdb.tgz
 cd ..
 ```
 
-### 1. Build da imagem
+### 1. Build the image
 
 ```bash
 docker build -t imdb-postgres .
 ```
 
-> A primeira execução demora alguns minutos — o PostgreSQL cria as tabelas e importa todos os CSVs durante o build.
+> The first run takes a few minutes — PostgreSQL creates the tables and imports all CSVs during the build.
 
-### 2. Subir o container
+### 2. Start the container
 
 ```bash
 docker run -d \
@@ -50,25 +50,25 @@ docker run -d \
   imdb-postgres
 ```
 
-> Se a porta 5432 já estiver em uso na sua máquina (ex: PostgreSQL local rodando), troque a porta do host: `-p 5434:5432`
+> If port 5432 is already in use on your machine (e.g., a local PostgreSQL instance running), change the host port: `-p 5434:5432`
 
-### 3. Conectar ao banco
+### 3. Connect to the database
 
 ```bash
 docker exec -it imdb psql -U postgres -d imdb
 ```
 
-Ou via qualquer cliente PostgreSQL (DBeaver, psql, etc.) com:
+Or via any PostgreSQL client (DBeaver, psql, etc.) with:
 
-| Parâmetro | Valor     |
+| Parameter | Value     |
 |-----------|-----------|
 | Host      | localhost |
-| Porta     | 5432      |
-| Banco     | imdb      |
-| Usuário   | postgres  |
-| Senha     | postgres  |
+| Port      | 5432      |
+| Database  | imdb      |
+| User      | postgres  |
+| Password  | postgres  |
 
-### 4. Executar uma query do benchmark
+### 4. Run a benchmark query
 
 ```bash
 docker exec -i imdb psql -U postgres -d imdb < join-order-benchmark/1a.sql
