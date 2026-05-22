@@ -19,6 +19,7 @@ São os mesmos dados usados no paper original (*"A Resource-Aware Deep Cost Mode
 
 ### Pré-requisitos
 - [Docker](https://www.docker.com/) instalado
+- ~10GB de espaço livre em disco (~4.8GB para os CSVs + ~5GB para a imagem Docker com o banco populado)
 
 ### 0. Baixar os dados
 
